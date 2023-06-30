@@ -1,0 +1,292 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+%d: reads an integer value
+%f: reads a floating-point value
+%c: reads a single character
+%s: reads a string of characters
+%lf: reads a double-precision floating-point value
+
+
+#include <stdio.h>
+
+int main() {
+    int num;
+    float fnum;
+    printf("Enter an integer and a floating-point number: ");
+    scanf("%d %f", &num, &fnum);
+    printf("You entered %d and %f\n", num, fnum);
+    return 0;
+}
+
+==========================================
+
+
+#include <stdio.h>
+
+#define MAX_LENGTH 100
+
+int main() {
+    char input[MAX_LENGTH];
+
+    printf("Enter a string: ");
+    fgets(input, MAX_LENGTH, stdin);
+
+    printf("You entered: %s\n", input);
+
+    return 0;
+}
+
+
+====================================
+
+
+#include <stdio.h>
+
+#define MAX_LENGTH 100
+#define USERNAME 50
+int main() {
+    char input[MAX_LENGTH];
+    char input2[USERNAME];
+    
+    printf("Enter a string: ");
+    fgets(input, MAX_LENGTH, stdin);
+
+    printf("You entered: %s", input);
+    
+    printf("Enter username: ");
+    scanf("%s", input2);
+    
+    printf("You entered: %s\n", input2);
+    
+
+    return 0;
+}
+
+
+==============================================
+
+ALMOST CALCULATOR
+
+#include <stdio.h>
+
+int add(int a, int b) {
+    return a + b;
+}
+
+int subtract(int a, int b) {
+    return a - b;
+}
+
+int multiply(int a, int b) {
+    return a * b;
+}
+
+int main() {
+    int choice, num1, num2, result;
+
+    printf("Welcome to the Calculator Program!\n");
+    printf("Please choose an operation:\n");
+    printf("1. Add\n");
+    printf("2. Subtract\n");
+    printf("3. Multiply\n");
+
+    printf("Enter your choice (1-3): ");
+    scanf("%d", &choice);
+
+    printf("Enter two numbers: ");
+    scanf("%d %d", &num1, &num2);
+
+    switch (choice) {
+        case 1:
+            result = add(num1, num2);
+            printf("Result: %d\n", result);
+            break;
+        case 2:
+            result = subtract(num1, num2);
+            printf("Result: %d\n", result);
+            break;
+        case 3:
+            result = multiply(num1, num2);
+            printf("Result: %d\n", result);
+            break;
+        default:
+            printf("Invalid choice.\n");
+    }
+
+    return 0;
+}
+
+
+=======================================
+
+ALMOST CALCULATOR 2 NO FUNC IN A LOOP
+
+#include <stdio.h>
+
+int main() {
+    char choice;
+    int num1, num2, result;
+    int quit = 0;
+
+    printf("Welcome to the Calculator Program!\n");
+
+    while (!quit) {
+        printf("\nPlease choose an operation:\n");
+        printf("1. Add\n");
+        printf("2. Subtract\n");
+        printf("3. Multiply\n");
+        printf("Enter 'n' to quit.\n");
+
+        printf("Enter your choice (1-3 or 'n'): ");
+        scanf(" %c", &choice);
+
+        if (choice == 'n') {
+            printf("Exiting the program...\n");
+            quit = 1;
+            continue;
+        }
+
+        printf("Enter two numbers: ");
+        scanf("%d %d", &num1, &num2);
+
+        if (choice == '1') {
+            result = num1 + num2;
+            printf("Result: %d\n", result);
+        } else if (choice == '2') {
+            result = num1 - num2;
+            printf("Result: %d\n", result);
+        } else if (choice == '3') {
+            result = num1 * num2;
+            printf("Result: %d\n", result);
+        } else {
+            printf("Invalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
+
+========================================
+
+connect to a database in c
+
+====
+====
+
+Certainly! Here is a sample C program that creates a connection with a SQLite database then creates tables for full name, username, email, password, phone and zip code. After the tables have been created, the program displays the data that was input.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <sqlite3.h>
+
+int main(int argc, char* argv[]) {
+    sqlite3 *db;
+    char *err_msg = 0;
+
+    int rc = sqlite3_open("user.db", &db);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+
+        return 1;
+    }
+
+    char *sql = "CREATE TABLE IF NOT EXISTS user("
+                "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                "name TEXT NOT NULL,"
+                "username TEXT NOT NULL,"
+                "email TEXT NOT NULL,"
+                "password TEXT NOT NULL,"
+                "phone TEXT NOT NULL,"
+                "zipcode TEXT NOT NULL);";
+
+    rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "SQL error: %s\n", err_msg);
+        sqlite3_free(err_msg);
+        sqlite3_close(db);
+
+        return 1;
+    }
+
+    char name[50], username[20], email[50], password[20], phone[15], zipcode[10];
+
+    printf("Enter your full name: ");
+    fgets(name, 50, stdin);
+    printf("Enter your username: ");
+    fgets(username, 20, stdin);
+    printf("Enter your email: ");
+    fgets(email, 50, stdin);
+    printf("Enter your password: ");
+    fgets(password, 20, stdin);
+    printf("Enter your phone number: ");
+    fgets(phone, 15, stdin);
+    printf("Enter your zipcode: ");
+    fgets(zipcode, 10, stdin);
+
+    sql = sqlite3_mprintf("INSERT INTO user (name, username, email, password, phone, zipcode) VALUES ('%q', '%q', '%q', '%q', '%q', '%q');", name,
+                          username,
+                          email,
+                          password,
+                          phone,
+                          zipcode);
+
+    rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "SQL error: %s\n", err_msg);
+        sqlite3_free(err_msg);
+        sqlite3_close(db);
+
+        return 1;
+    }
+
+    sql = "SELECT * FROM user;";
+
+    rc = sqlite3_exec(db, sql, callback_func_for_displaying_data_from_table_user_account_info_table_in_sqlite_db , 0 , &err_msg);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr,"SQL error: %s\n", err_msg);
+        sqlite3_free(err_msg);
+        sqlite3_close(db);
+
+        return 1;
+    }
+
+    sqlite3_close(db);
+
+    return 0;
+}
+
+static int callback_func_for_displaying_data_from_table_user_account_info_table_in_sqlite_db(void *NotUsed,int argc,char **argv,char **azColName){
+   int i;
+   for(i=0;i<argc;i++){
+      printf("%s = %s\n",azColName[i],argv[i] ? argv[i] : "NULL");
+   }
+   printf("\n");
+   return 0;
+}
+```
+
+This program uses SQLite library to create a connection with a SQLite database and create tables for full name username email password phone and zip code. After the tables have been created and data has been inputted by the user through the console input prompts provided by the program. The program then displays the data that was inputted.
+
+I hope this helps! Let me know if you have any other questions.
+
+Source: Conversation with Bing, 6/29/2023
+(1) SQLite Python: Creating a New Database - SQLite Tutorial. https://www.sqlitetutorial.net/sqlite-python/creating-database/.
+(2) Android - SQLite Database - Online Tutorials Library. https://www.tutorialspoint.com/android/android_sqlite_database.htm.
+(3) Connection strings - Microsoft.Data.Sqlite | Microsoft Learn. https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/connection-strings.
+(4) connecting sqlite to C program - Stack Overflow. https://stackoverflow.com/questions/51781768/connecting-sqlite-to-c-program.
+(5) Password Protect a SQLite DB. Is it possible? - Stack Overflow. https://stackoverflow.com/questions/1381264/password-protect-a-sqlite-db-is-it-possible.
+(6) An Introduction To The SQLite C/C++ Interface. https://www.sqlite.org/cintro.html.
+
+===
+====
+
+
